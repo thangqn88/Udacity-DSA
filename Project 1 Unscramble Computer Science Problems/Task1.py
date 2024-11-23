@@ -11,19 +11,15 @@ with open('calls.csv', 'r') as f:
     reader = csv.reader(f)
     calls = list(reader)
 
-phones = []
-for i in range(len(texts)):
-    if texts[i][0] not in phones:
-        phones.append(texts[i][0])
-    if texts[i][1] not in phones:
-        phones.append(texts[i][1])
+phones = set()
+for i in texts:
+    phones.add(i[0])
+    phones.add(i[1])
+    
 
-for i in range(len(calls)):
-    if calls[i][0] not in phones:
-        phones.append(calls[i][0])
-    if calls[i][1] not in phones:
-        phones.append(calls[i][1])
-
+for i in calls:
+    phones.add(i[0])
+    phones.add(i[1])
 
 """
 TASK 1:

@@ -22,16 +22,16 @@ def get_area_code(phoneNumber):
         return phoneNumber[:4]
     
 def get_distinct_codes_called_by_bangalore(calls):
-    codes = []
+    codes = set()
     for c in calls:
         if c[0].startswith('(080)'):
             areaCode = get_area_code(c[1])
-            if areaCode not in codes:
-                codes.append(areaCode)
-    return sorted(codes)
+            codes.add(areaCode)
+    return list(codes).sort()
 
+list_of_codes = get_distinct_codes_called_by_bangalore(calls)
 print('The numbers called by people in Bangalore have codes:')
-for called_code in get_distinct_codes_called_by_bangalore(calls):
+for called_code in list_of_codes:
     print(called_code)
 
 # Part B
@@ -43,14 +43,13 @@ def is_fixed_line_number(phoneNumber):
 
 def get_percentage_calls_between_bangalore(calls):
     count_within_bangalore = 0
-    count_bangalore_to_others = 0
+    count_from_bangalore = 0  
     for c in calls:
-        if is_bangalore_number(c[0]) and is_bangalore_number(c[1]):
-            count_within_bangalore+=1
-
-        if is_bangalore_number(c[0]) and is_fixed_line_number(c[1]):
-            count_bangalore_to_others+=1
-    return 100*count_within_bangalore/count_bangalore_to_others
+        if is_bangalore_number(c[0]):
+            count_from_bangalore+=1
+            if is_bangalore_number(c[1]):
+                count_within_bangalore+=1
+    return 100*count_within_bangalore/count_from_bangalore
 
 print(f'{get_percentage_calls_between_bangalore(calls):.2f} percent of calls from fixed lines in Bangalore are calls to other fixed lines in Bangalore.')
 
