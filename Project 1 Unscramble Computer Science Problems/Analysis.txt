@@ -18,4 +18,4 @@
     - Part B: O(n) Because we scan the list "calls"
 
 ### Task 4
-- Time complexity: 0(m+n) Because we scan the list "texts"and "calls"
+- Time complexity: 0(n*logn) Because we scan the list "texts"and "calls" and we have sorted() which have O(n*logn)

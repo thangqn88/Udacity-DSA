@@ -45,5 +45,5 @@ get_non_marketing_numbers(texts, calls)
 get_marketing_numbers(calls)
 
 print("These numbers could be telemarketers: ")
-for number in marketing_numbers:
+for number in sorted(marketing_numbers):
     print(number)

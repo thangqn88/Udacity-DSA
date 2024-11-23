@@ -27,7 +27,7 @@ def get_distinct_codes_called_by_bangalore(calls):
         if c[0].startswith('(080)'):
             areaCode = get_area_code(c[1])
             codes.add(areaCode)
-    return list(codes).sort()
+    return sorted(codes)
 
 list_of_codes = get_distinct_codes_called_by_bangalore(calls)
 print('The numbers called by people in Bangalore have codes:')
