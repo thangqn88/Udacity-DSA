@@ -12,6 +12,47 @@ with open('calls.csv', 'r') as f:
     reader = csv.reader(f)
     calls = list(reader)
 
+# Part A
+def get_area_code(phoneNumber):
+    if phoneNumber.startswith('('):
+        return phoneNumber.split(')')[0] + ')'
+    elif phoneNumber.startswith('140'):
+        return '140'
+    elif phoneNumber.startswith('7') or phoneNumber.startswith('8') or phoneNumber.startswith('9'):
+        return phoneNumber[:4]
+    
+def get_distinct_codes_called_by_bangalore(calls):
+    codes = set()
+    for c in calls:
+        if c[0].startswith('(080)'):
+            areaCode = get_area_code(c[1])
+            codes.add(areaCode)
+    return sorted(codes)
+
+list_of_codes = get_distinct_codes_called_by_bangalore(calls)
+print('The numbers called by people in Bangalore have codes:')
+for called_code in list_of_codes:
+    print(called_code)
+
+# Part B
+def is_bangalore_number(phoneNumber):
+    return phoneNumber.startswith('(080)')
+
+def is_fixed_line_number(phoneNumber):
+    return phoneNumber.startswith('(')
+
+def get_percentage_calls_between_bangalore(calls):
+    count_within_bangalore = 0
+    count_from_bangalore = 0  
+    for c in calls:
+        if is_bangalore_number(c[0]):
+            count_from_bangalore+=1
+            if is_bangalore_number(c[1]):
+                count_within_bangalore+=1
+    return 100*count_within_bangalore/count_from_bangalore
+
+print(f'{get_percentage_calls_between_bangalore(calls):.2f} percent of calls from fixed lines in Bangalore are calls to other fixed lines in Bangalore.')
+
 """
 TASK 3:
 (080) is the area code for fixed line telephones in Bangalore.

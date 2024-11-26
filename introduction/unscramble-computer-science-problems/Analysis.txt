@@ -1,0 +1,21 @@
+### Task0
+- Time complexity: O(1). Accessing the array via index have time complexity O(1)
+- Space complexity: O(1)
+
+### Task1
+- Time complexity: O(m+n) where m is total items of the "texts" and n is total items of the "calls"
+- Space complexity: O(n)
+
+### Task2
+- Time complexity: O(n) Because we loop over the calls
+- Space complexity: O(n)
+
+### Task 3
+- Time complexity:
+    - Part A:  O(n*log n) 
+        - scan the list "calls" twices O(2n) => O(n)
+        - use sort() in func: get_distinct_codes_called_by_bangalore => O(n*logn)
+    - Part B: O(n) Because we scan the list "calls"
+
+### Task 4
+- Time complexity: 0(n*logn) Because we scan the list "texts"and "calls" and we have sorted() which have O(n*logn)
