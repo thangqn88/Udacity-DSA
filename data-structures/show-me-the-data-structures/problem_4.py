@@ -100,19 +100,16 @@ def is_user_in_group(user: str, group: Group) -> bool:
     if user is None:
         return False
 
-    # Use a stack to implement an iterative depth-first search
-    stack = [group]
-
-    while stack:
-        current_group = stack.pop()
-        # Check if the user is directly in this group
-        if user in current_group.get_users():
-            return True
-
-        # Add all subgroups to the stack for further exploration
-        stack.extend(current_group.get_groups())
-
-    return False
+    users = group.get_users()
+    sub_groups = group.get_groups()
+    if user in users:
+        return True
+    if len(sub_groups) == 0:
+        return False
+    else:
+        for child_group in sub_groups:
+            return is_user_in_group(user, child_group)
+        
 
 if __name__ == "__main__":
     # Testing the implementation
@@ -132,8 +129,14 @@ if __name__ == "__main__":
     print("Test Case 1")
     print(is_user_in_group("sub_child_user", parent))  # Expected output: True
 
-    # Test Case 2
-    pass
+    # Test Case 2: Edge case: User is None
+    print("Test Case 2")
+    print(is_user_in_group(None, parent))  # Expected output: False
 
-    # Test Case 3
-    pass
+    # Test Case 3: Edge case: User is not in any group
+    print("Test Case 3")
+    print(is_user_in_group("random_user", parent))  # Expected output: False
+
+    # Test Case 4: Edge case: User is in the parent group
+    print("Test Case 4")
+    print(is_user_in_group("sub_child_user", sub_child))  # Expected output: True

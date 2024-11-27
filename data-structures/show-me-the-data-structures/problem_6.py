@@ -122,10 +122,38 @@ def union(llist_1: LinkedList, llist_2: LinkedList) -> LinkedList:
         A new linked list containing all unique elements from both input linked lists.
     """
     # Use a set to store all unique elements
-    pass
+    if llist_1 is None and llist_2 is None:
+        return LinkedList()
+    
+    if llist_1.head is None:
+        return llist_2
+    
+    if llist_2.head is None:
+        return llist_1
+    
+    unique_elements = set()
+    node_1 = llist_1.head
+    while node_1:
+        unique_elements.add(node_1.value)
+        node_1 = node_1.next
 
-    # Create a new linked list to store the union
-    pass
+    node_2 = llist_2.head
+    while node_2:
+        unique_elements.add(node_2.value)
+        node_2 = node_2.next
+    
+    result_list =  LinkedList()
+    node = result_list.head
+    for element in unique_elements:
+        if node is None:
+            result_list.head = Node(element)
+            node = result_list.head
+        else:
+            node.next = Node(element)
+            node = node.next
+
+    node.next = None
+    return result_list
 
 def intersection(llist_1: LinkedList, llist_2: LinkedList) -> LinkedList:
     """
@@ -144,13 +172,37 @@ def intersection(llist_1: LinkedList, llist_2: LinkedList) -> LinkedList:
         A new linked list containing all elements that are present in both input linked lists.
     """
     # Use sets to find the intersection
-    pass
+    if llist_1 is None or llist_2 is None:
+        return LinkedList()
+
+    val_set_1 = set()
+    node_1 = llist_1.head
+    while node_1:
+        val_set_1.add(node_1.value)
+        node_1 = node_1.next
+
+    val_set_2 = set()
+    node_2 = llist_2.head
+    while node_2:
+        val_set_2.add(node_2.value)
+        node_2 = node_2.next
+
+    llist_result = LinkedList()
+    node = llist_result.head
 
     # Find the intersection of both sets
-    pass
+    for val in val_set_1:
+        if val in val_set_2:
+            if node is None:
+                llist_result.append(val)
+                node = llist_result.head
+            else:
+                node.next = Node(val)
+                node = node.next
+    if node:
+        node.next = None
+    return llist_result
 
-    # Create a new linked list to store the intersection
-    pass
 
 if __name__ == "__main__":
     ## Test case 1
@@ -187,8 +239,19 @@ if __name__ == "__main__":
     print("Union:", union(linked_list_3, linked_list_4)) # Expected: 1, 2, 3, 4, 6, 7, 8, 9, 11, 21, 23, 35, 65
     print("Intersection:", intersection(linked_list_3, linked_list_4)) # Expected: empty
 
-    ## Test case 3
-    pass
+    ## Test case 3: Edge case with empty linked lists
+    linked_list_5 = LinkedList()
+    linked_list_6 = LinkedList()
+    print("\nTest Case 3:")
+    print("Union:", union(linked_list_5, linked_list_6)) # Expected: empty
+    print("Intersection:", intersection(linked_list_5, linked_list_6)) # Expected: empty
 
-    ## Test case 4
-    pass
+    ## Test case 4: Edge case with one empty linked list
+    linked_list_7 = LinkedList()
+    linked_list_8 = LinkedList()
+    for i in element_1:
+        linked_list_7.append(i)
+    print("\nTest Case 4:")
+    print("Union:", union(linked_list_7, linked_list_8)) # Expected: 2, 3, 4, 6, 23, 35, 65
+    print("Intersection:", intersection(linked_list_7, linked_list_8)) # Expected: empty
+    

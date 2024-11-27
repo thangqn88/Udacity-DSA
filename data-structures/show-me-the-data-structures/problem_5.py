@@ -75,18 +75,27 @@ class Blockchain:
         The list of blocks in the blockchain.
     """
 
-    def __init__(self) -> None:
-        """
-        Constructs all the necessary attributes for the Blockchain object.
-        """
-        pass
+    def __init__(self):
+        self.head = None
+        self.chain = []
+    
+    def append(self, data):
+        if self.head is None:
+            self.head = Block(datetime.datetime.now(), data, "0")
+            self.chain.append(self.head)
+        else:
+            self.head = Block(datetime.datetime.now(), data, self.head.hash)
+            self.chain.append(self.head)
 
     def create_genesis_block(self) -> None:
         """
         Create the genesis block (the first block in the blockchain).
         """
         # Genesis block has no previous hash and empty data
-        pass
+        genesis_block = Block(datetime.datetime.now(), "Genesis Block", "0")
+        self.chain.append(genesis_block)
+
+
 
     def add_block(self, data: str) -> None:
         """
@@ -97,7 +106,13 @@ class Blockchain:
         data : str
             The data to be stored in the new block.
         """
-        pass
+        if len(self.chain) == 0:
+            self.create_genesis_block()
+        else:
+            previous_block = self.chain[-1]
+            new_block = Block(datetime.datetime.now(), data, previous_block.hash)
+            self.chain.append(new_block)
+
 
     def __repr__(self) -> str:
         """
@@ -123,8 +138,14 @@ if __name__ == "__main__":
     blockchain.add_block("Block 3 Data")
     print(blockchain)
 
-    # Test Case 2
-    pass
+    # Test Case 2: Edge case with empty blockchain
+    print("Test Case 2: Edge case with empty blockchain")
+    blockchain = Blockchain()
+    print(blockchain)
+    
 
-    # Test Case 3
-    pass
+    # Test Case 3: Edge case with only genesis block
+    print("Test Case 3: Edge case with only genesis block")
+    blockchain = Blockchain()
+    blockchain.create_genesis_block()
+    print(blockchain)
