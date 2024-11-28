@@ -25,7 +25,58 @@ def rotated_array_search(input_list: list[int], number: int) -> int:
     Returns:
     int: Index of the target number or -1 if not found
     """
-    pass
+    if not input_list:
+        return -1
+
+    # Find the pivot point in the list
+    pivot_index = find_pivot_index(input_list)
+
+    if pivot_index == -1:
+        return binary_search(input_list, number, 0, len(input_list) - 1)
+
+    if input_list[pivot_index] == number:
+        return pivot_index
+
+    # If the target number is greater than the first element
+    if number >= input_list[0]:
+        return binary_search(input_list, number, 0, pivot_index - 1)
+
+    # If the target number is less than the first element
+    return binary_search(input_list, number, pivot_index + 1, len(input_list) - 1)
+
+def find_pivot_index(input_list: list[int]) -> int:
+    left = 0
+    right = len(input_list) - 1
+
+    while left <= right:
+        mid = (left + right) // 2
+
+        # If the mid element is greater than the next element
+        if mid < right and input_list[mid] > input_list[mid + 1]:
+            return mid
+        # If the mid element is less than the previous element
+        if mid > left and input_list[mid] < input_list[mid - 1]:
+            return mid - 1
+        # If the list is not rotated
+        if input_list[left] >= input_list[mid]:
+            right = mid - 1
+        else:
+            left = mid + 1
+
+    return -1
+
+def binary_search(input_list: list[int], number: int, left: int, right: int) -> int:
+    while left <= right:
+        mid = (left + right) // 2
+
+        if input_list[mid] == number:
+            return mid
+        if input_list[mid] < number:
+            left = mid + 1
+        else:
+            right = mid - 1
+
+    return -1
 
 # Test function using provided test cases
 def test_function(test_case: list[list[int], int]) -> None:

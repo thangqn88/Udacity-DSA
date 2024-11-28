@@ -22,7 +22,17 @@ def sqrt(number: int) -> int:
     Returns:
     int: Floored square root
     """
-    pass
+    if number < 0:
+        raise ValueError("Invalid data input")
+    low, high = 0, number
+    while low <= high:
+        mid = (low + high) // 2
+        if mid * mid <= number < (mid + 1) * (mid + 1):
+            return mid
+        elif mid * mid < number:
+            low = mid + 1
+        else:
+            high = mid - 1
 
 if __name__ == "__main__":
     # Test cases
