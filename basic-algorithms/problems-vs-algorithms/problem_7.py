@@ -28,11 +28,19 @@ class RouteTrieNode:
     children (dict): A dictionary mapping part of the route to the corresponding RouteTrieNode.
     handler (Optional[str]): The handler associated with this node, if any.
     """
-    def __init__(self):
+    def __init__(self, handler=None):
         """
         Initialize a RouteTrieNode with an empty dictionary for children and no handler.
         """
-        pass
+        self.children = {}
+        self.handler = handler
+
+    def insert(self, path_part):
+        # Insert the node
+        if path_part not in self.children:
+            self.children[path_part] = RouteTrieNode()
+        
+        
 
 class RouteTrie:
     """
@@ -42,35 +50,27 @@ class RouteTrie:
     root (RouteTrieNode): The root node of the trie.
     """
     def __init__(self, root_handler: str):
-        """
-        Initialize the RouteTrie with a root handler.
+        self.root = RouteTrieNode()
+        self.handler = root_handler
 
-        Args:
-        root_handler (str): The handler for the root node.
-        """
-        pass
 
     def insert(self, path_parts: list[str], handler: str) -> None:
-        """
-        Insert a route and its handler into the trie.
-
-        Args:
-        path_parts (list[str]): A list of parts of the route.
-        handler (str): The handler for the route.
-        """
-        pass
+        node = self.root
+        for path in path_parts:
+            if path not in node.children:
+                node.insert(path)
+            node = node.children[path]
+        node.handler = handler
 
     def find(self, path_parts: list[str]) ->  Optional[str]:
-        """
-        Find the handler for a given route.
-
-        Args:
-        path_parts (list[str]): A list of parts of the route.
-
-        Returns:
-        str or None: The handler for the route if found, otherwise None.
-        """
-        pass
+        if self.root is None:
+            return self.not_found
+        node = self.root
+        for part in path_parts:
+            if part not in node.children:
+                return self.not_found
+            node = node.children[part]
+        return node.handler
 
 class Router:
     """
@@ -81,48 +81,37 @@ class Router:
     not_found_handler (str): The handler to return when a route is not found.
     """
     def __init__(self, root_handler: str, not_found_handler: str):
-        """
-        Initialize the Router with a root handler and a not-found handler.
-
-        Args:
-        root_handler (str): The handler for the root route.
-        not_found_handler (str): The handler for routes that are not found.
-        """
-        pass
+        self.root = RouteTrie(root_handler)
+        self.handler = root_handler
+        self.not_found = not_found_handler if not_found_handler != "" or not_found_handler is not None else "HTTP 404 Page Not Found"
 
     def add_handler(self, path: str, handler: str) -> None:
-        """
-        Add a handler for a route.
+        node = self.root
+        path_list = self.split_path(path)
+        node.insert(path_list, handler)
 
-        Args:
-        path (str): The route path.
-        handler (str): The handler for the route.
-        """
-        pass
 
     def lookup(self, path: str) -> str:
-        """
-        Look up a route and return the associated handler.
+        if path == '/':
+            return "It's Root!"
+        node = self.root.root
+        path_list = self.split_path(path)
+        for part in path_list:
+            if part not in node.children:
+                return "HTTP 404 Page Not Found"
+            node = node.children[part]
+        if not node.handler:
+            return "HTTP 404 Page Not Found"
+        return node.handler
 
-        Args:
-        path (str): The route path.
-
-        Returns:
-        str: The handler for the route if found, otherwise the not-found handler.
-        """
-        pass
 
     def split_path(self, path: str) -> list[str]:
-        """
-        Split the path into parts and remove empty parts to handle trailing slashes.
+        path_list = path.split('/')
+        # discard the empty strings
+        if path_list[0] == '':
+            path_list = path_list[1:]
+        return path_list
 
-        Args:
-            path (str): The path to split.
-
-        Returns:
-            List[str]: A list of parts of the path.
-        """
-        pass
 
 if __name__ == '__main__':
     # create the router and add a route
@@ -131,15 +120,15 @@ if __name__ == '__main__':
 
     # Edge case: Empty path
     print(router.lookup(""))
-    # Expected output: 'not found handler'
+    # Expected output: 'HTTP 404 Page Not Found'
 
     # Normal case: Path not found
     print(router.lookup("/home/contact"))
-    # Expected output: 'not found handler'
+    # Expected output: 'HTTP 404 Page Not Found'
 
     # Normal case: Path with multiple segments
     print(router.lookup("/home/about/me"))
-    # Expected output: 'not found handler'
+    # Expected output: 'HTTP 404 Page Not Found'
 
     # Normal case: Path with exact match
     print(router.lookup("/home/about"))
