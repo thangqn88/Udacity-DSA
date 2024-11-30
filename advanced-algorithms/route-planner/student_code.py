@@ -1,44 +1,51 @@
-import heapq
+import heapq, math
 from typing import Optional
+from queue import PriorityQueue
 
-from helpers import Map
+from helpers import Map, load_map, show_map
 
-def heuristic(a: tuple[float, float], b: tuple[float, float]) -> float:
-    """
-    Calculate the Euclidean distance between two points.
+def heuristic(a, b):
+    return math.sqrt(((a[0] - b[0]) ** 2) + ((a[1] - b[1]) ** 2))
 
-    Args:
-        a (tuple[float, float]): The coordinates of the first point (x1, y1).
-        b (tuple[float, float]): The coordinates of the second point (x2, y2).
+def reconstruct_path(came_from, current, goal):
+    node = goal
+    path = [node]
+    if node not in came_from:
+        print(f"Node: {node} not found in map.")
+        return
+    
+    while current != node:
+        node = came_from[node]
+        path.append(node)
+    path.reverse()
+    return path
 
-    Returns:
-        float: The Euclidean distance between the two points.
-    """
-    pass
+def heuristic_measure(start, goal):
+    return math.sqrt(((start[0] - goal[0]) ** 2) + ((start[1] - goal[1]) ** 2))
 
-def reconstruct_path(came_from: dict[int, int], current: int) -> list[int]:
-    """
-    Reconstruct the path from the start node to the goal node.
+def shortest_path(M: Map, start: int, goal: int):
+    path_queue = PriorityQueue()
+    path_queue.put(start, 0)
 
-    Args:
-        came_from (dict[int, int]): A dictionary mapping each node to the node it came from.
-        current (int): The goal node.
+    previous = {start: None}
+    score = {start: 0}
 
-    Returns:
-        list[int]: The reconstructed path from the start node to the goal node.
-    """
-    pass
+    while not path_queue.empty():
+        current = path_queue.get()
+        if current == goal:
+            reconstruct_path(previous, start, goal)
 
-def shortest_path(M: Map, start: int, goal: int) -> Optional[list[int]]:
-    """
-    Find the shortest path between two nodes in a map using the A* algorithm.
+        for node in M.roads[current]:
+            update_score = score[current] + heuristic_measure(
+                M.intersections[current],
+                M.intersections[node]
+            )
 
-    Args:
-        M (Map): The map containing the graph, intersections, and roads.
-        start (int): The starting node.
-        goal (int): The goal node.
+            if node not in score or update_score < score[node]:
+                score[node] = update_score
+                totalScore = update_score + heuristic_measure(
+                    M.intersections[current], M.intersections[node])
+                path_queue.put(node, totalScore)
+                previous[node] = current
 
-    Returns:
-        Optional[list[int]]: The shortest path from the start node to the goal node, or None if no path is found.
-    """
-    pass
+    return reconstruct_path(previous, start, goal)
